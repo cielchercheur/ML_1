@@ -2,6 +2,8 @@
 """
 Tutorial 1 – Unsupervised Machine Learning (HS25)
 
+python 3.12
+
 What this script does
 ---------------------
 Solves the Tutorial I tasks and writes all results into a `results/` folder:
@@ -15,7 +17,7 @@ Solves the Tutorial I tasks and writes all results into a `results/` folder:
     5) Save lists and example plots.
 
 Run:
-$ python main.py --data tut1_dataset.parquet --part all
+$ python tut_1.py --data tut1_dataset.parquet
 
 """
 
