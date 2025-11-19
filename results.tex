@@ -1,0 +1,203 @@
+%! Author =
+%! Date = 19.11.2025
+
+% Preamble
+\documentclass[11pt]{article}
+
+% Packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amssymb}
+
+
+% Document
+\begin{document}
+
+\section*{Tutorial 1 — Unsupervised Machine Learning (HS25)}
+
+All code was written in PyCharm 2025.2.4 with the use of built-in AI assistant
+
+\subsection{Part 1}
+\item Interpolated spectra follow the original curves closely only with small deviations seen where interpolation smooths noise.
+\item Along spectral type A→M, spectra change shape: hot stars have more flux at shorter wavelengths. Cooler stars peak at longer wavelengths, with molecular bands appearing.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1.1\textwidth]{./results/part1_vstars_original_vs_interpolated}
+    \caption{Original vs interpolated spectra}
+    \label{fig:part 1}
+\end{figure}
+
+\newpage
+\subsection{Part 2}
+As PCA is based on covariance, standardizing ensures no wavelength dominates purely because of larger variance.
+We normalize each spectrum to [0,1] to remove absolute brightness, then standardize per wavelength to equalize variance across wavelengths so PCA doesn’t overweight certain regions.
+This should be consistent with standard PCA practice.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{./results/part2_pca_scree}
+    \caption{Variance vs number of PCs, with a horizontal line at 95\%}
+    \label{fig:part 2 scree}
+\end{figure}
+
+\item As it can be seen below spectral types form ordered bands along PC1 (hot to cool), but overlap, which gives us a continuous sequence and not perfectly separated clusters. Luminosity classes overlap much more.
+\item PC1+PC2 explain $0.918$ 2D captures main trend, but not with all details ($<95\%$).
+\item PC3 adds significant variance $0.966$ ($>95\%$) and helps separate luminosity classes, but 2D is still easier to visualize.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./results/part2_pca2_scatter_by_sptype}
+    \caption{PCA(n\_components=2) scatter colored by spectral type}
+    \label{fig:part 2 sptype}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./results/part2_pca2_scatter_by_luminosity}
+    \caption{PCA(n\_components=2) scatter colored by luminosity class}
+    \label{fig:part 2 luminosity}
+\end{figure}
+
+\newpage
+\subsection{Part 3}
+
+\item As it can be seen on the plot below Inertia monotonically decreases with k.
+\item Silhouette and Calinski–Harabasz show several local maxima. Davies–Bouldin lowers with incresing k.
+\item So we can say that the best k is not unique as several values have similar internal scores.
+
+\item NOTE: This part is unfinished because something is wrong in calculations and with plotting. But below there is Part 4.
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./results/part3_kmeans_model_selection}
+    \caption{}
+    \label{fig:part 3 kmeans}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{./results/part3_kmeans_scatter}
+    \caption{}
+    \label{fig:part 3 kmeans scatter}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{./results/part3_dbscan_scatter}
+    \caption{}
+    \label{fig:part 3 dbscan scatter}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{./results/part3_dbscan_kdist_curve}
+    \caption{}
+    \label{fig:part 3 kdist curve}
+\end{figure}
+
+%\begin{figure}[htbp]
+%    \centering
+%    \includegraphics[width=0.5\textwidth]{./results/part3_dbscan_silhouette_vs_nclusters}
+%    \caption{}
+%    \label{fig:part 3 silhouette vs nclusters}
+%\end{figure}
+
+\newpage
+\subsection{Part 4}
+\item With different methods we get different outliners.
+
+\begin{table}[htbp!]
+    \centering
+    \tiny
+    \begin{tabular}{rccc}
+        \toprule
+        Object ID & Robust z-score (top 1\%) & Isolation Forest (top 1\%) & LOF (top 1\%) \\
+        \midrule
+        82   &              & \checkmark &             \\
+        333  &              &            & \checkmark  \\
+        346  & \checkmark   &            &             \\
+        509  &              & \checkmark &             \\
+        542  &              & \checkmark &             \\
+        747  &              &            & \checkmark  \\
+        756  &              & \checkmark &             \\
+        766  & \checkmark   &            &             \\
+        838  &              & \checkmark & \checkmark  \\
+        871  &              & \checkmark &             \\
+        892  &              & \checkmark & \checkmark  \\
+        909  &              & \checkmark & \checkmark  \\
+        988  &              & \checkmark &             \\
+        1033 &              &            & \checkmark  \\
+        1034 &              &            & \checkmark  \\
+        1105 &              &            & \checkmark  \\
+        1144 &              & \checkmark & \checkmark  \\
+        1181 &              & \checkmark & \checkmark  \\
+        1199 & \checkmark   &            &             \\
+        1266 &              & \checkmark &             \\
+        1269 &              &            & \checkmark  \\
+        1339 &              & \checkmark & \checkmark  \\
+        1359 & \checkmark   &            &             \\
+        1367 & \checkmark   &            &             \\
+        1383 &              & \checkmark & \checkmark  \\
+        1388 &              & \checkmark &             \\
+        1451 &              & \checkmark & \checkmark  \\
+        1452 &              &            & \checkmark  \\
+        1543 & \checkmark   & \checkmark & \checkmark  \\
+        1551 &              &            & \checkmark  \\
+        1553 &              &            & \checkmark  \\
+        1554 &              & \checkmark & \checkmark  \\
+        1561 & \checkmark   &            & \checkmark  \\
+        1670 &              &            & \checkmark  \\
+        1812 &              &            & \checkmark  \\
+        2123 &              & \checkmark &             \\
+        2125 &              & \checkmark &             \\
+        2130 &              & \checkmark &             \\
+        2140 & \checkmark   &            &             \\
+        2141 &              & \checkmark &             \\
+        2147 & \checkmark   &            &             \\
+        2155 & \checkmark   &            &             \\
+        2159 & \checkmark   &            &             \\
+        2174 & \checkmark   &            &             \\
+        2176 & \checkmark   &            &             \\
+        2177 & \checkmark   &            &             \\
+        2178 & \checkmark   &            &             \\
+        2180 & \checkmark   &            &             \\
+        2189 & \checkmark   &            &             \\
+        2192 & \checkmark   &            &             \\
+        2198 & \checkmark   &            &             \\
+        2203 & \checkmark   &            &             \\
+        2207 & \checkmark   & \checkmark &             \\
+        2208 & \checkmark   &            &             \\
+        2209 & \checkmark   &            & \checkmark  \\
+        \bottomrule
+    \end{tabular}
+    \caption{Objects detected by each anomaly detection method (checkmarks indicate detection)}
+    \label{tab:method_overlap}
+\end{table}
+\item Robust z-score (R): 23 objects. Isolation Forest (I): 23 objects. LOF (L): 23 objects.
+\item Total unique objects $(R$ U $I$ U $L)$: 55.
+\newpage
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{./results/part4_outliers_robust_zscore}
+    \caption{Ouliners with z-score method}
+    \label{fig:part 4 zscore}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{./results/part4_outliers_isolation_forest}
+    \caption{Ouliners with isolation forest method}
+    \label{fig:part 4 isolation forest}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{./results/part4_outliers_lof}
+    \caption{Ouliners with local outlier factor method}
+    \label{fig:part 4 lof}
+\end{figure}
+
+\end{document}

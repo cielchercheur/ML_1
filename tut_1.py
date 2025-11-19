@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """
-Tutorial 1 – Unsupervised Machine Learning (HS25)
+Tutorial 1 — Unsupervised Machine Learning (HS25)
 
-python 3.12
+This code was written in PyCharm 2025.2.4 with the use of built-in AI assistant
+Build #PY-252.27397.106, built on October 23, 2025
+Source revision: 7bc036de6fb8a
 
 What this script does
 ---------------------
@@ -58,6 +60,7 @@ class Config:
 
     # Random seed for reproducibility (K-Means init, IF sampling, PCA whitening, etc.)
     seed: int = 42
+    # seed: int = 4 # totally random number
 
     # Number of principal components used for clustering/outliers (retain rich variance)
     n_pcs_for_models: int = 50
@@ -116,17 +119,6 @@ def sort_by_spectral_type(df: pd.DataFrame) -> pd.DataFrame:
     return df.sort_values(by=["spectral_type"], key=lambda x: x.map(sort_dict))
 
 
-def assert_common_grid(df: pd.DataFrame) -> np.ndarray:
-    # Grab the first wavelength grid; convert to numpy for vectorized comparisons
-    w0 = np.asarray(df["common_wavelengths"].iloc[0])
-
-    # Verify every row's grid equals the first one (exact equality because interpolation step is fixed).
-    for w in df["common_wavelengths"].values:
-        if not np.array_equal(np.asarray(w), w0):
-            raise AssertionError("Inconsistent 'common_wavelengths' across rows.")
-    return w0
-
-
 def pick_representative_per_sptype_V(df: pd.DataFrame) -> pd.DataFrame:
     # Choose the median-by-L2 row per group to avoiding obvious outliers
     df_V = df[df["luminosity"] == "V"].copy()
@@ -158,9 +150,9 @@ def plot_original_vs_interpolated_grid(df_rep: pd.DataFrame, outpath: str) -> No
         wl_common = np.asarray(row["common_wavelengths"])
         fl_interp = np.asarray(row["interpolated_fluxes"])
 
-        # Plot: original as thin line, interpolated as slightly thicker line
-        ax.plot(wl_orig, fl_orig, lw=0.8, alpha=0.7, label="original")
-        ax.plot(wl_common, fl_interp, lw=1.0, alpha=0.9, label="interpolated")
+        # Plot: original as thin line, interpolated as slightly thiner line
+        ax.plot(wl_orig, fl_orig, lw=1.0, alpha=0.8, label="original")
+        ax.plot(wl_common, fl_interp, lw=0.2, alpha=0.8, label="interpolated")
 
         # Title shows spectral type (e.g., "G2 V")
         ax.set_title(f"{row['spectral_type']} V", fontsize=9)
@@ -213,7 +205,7 @@ def plot_pca_scree(pca: PCA, outpath: str, evr_hline: float = 0.95) -> None:
 
     plt.figure(figsize=(6, 3))
     plt.plot(np.arange(1, len(cum) + 1), cum, marker="o", lw=1.0)
-    plt.axhline(evr_hline, ls="--", alpha=0.5)  # helps decide if PC3 is needed (Tutorial §2.2.3)
+    plt.axhline(evr_hline, ls="--", alpha=0.5)  # helps decide if PC3 is needed
     plt.xlabel("Number of Principal Components")
     plt.ylabel("Cumulative explained variance")
     plt.title("PCA scree curve")
@@ -230,7 +222,7 @@ def numericalize_labels(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def legend_handles_from_codes(ax_scatter, df: pd.DataFrame, col_label: str, col_code: str):
-    #Build legend handles reflecting the colormap encoding used in the scatter (Tutorial §2.2 hint).
+    #Build legend handles reflecting the colormap encoding used in the scatter
     cmap = ax_scatter.cmap
     norm = ax_scatter.norm
     unique_classes = df[col_label].unique()
@@ -272,7 +264,7 @@ def plot_pca_scatter(projected: np.ndarray, df_codes: pd.DataFrame, outpath_pref
 # PART 3
 def kmeans_model_selection(X: np.ndarray, kmin: int, kmax: int, seed: int) -> pd.DataFrame:
     # Sweep `k` for K-Means on features `X` and collect common internal metrics:
-    #    - inertia (SSE), silhouette, Calinski–Harabasz (CH), Davies–Bouldin (DB)
+    #    — inertia (SSE), silhouette, Calinski–Harabasz (CH), Davies–Bouldin (DB)
 
     rows = []
     for k in range(kmin, kmax + 1):
@@ -500,7 +492,7 @@ def solve_part2(cfg: Config, df: pd.DataFrame) -> dict:
 
     X_pca_full = pca.transform(X_std)
     X_pca2 = X_pca_full[:, :2]
-    X_pca3 = X_pca_full[:, :3]
+    #X_pca3 = X_pca_full[:, :3]
     df_codes = numericalize_labels(df)
 
     plot_pca_scatter(X_pca2, df_codes, os.path.join(cfg.outdir, "part2_pca2_scatter"))
